@@ -1,34 +1,27 @@
 import React, { useEffect, useState } from 'react';
-import SearchRecipe from './SearchRecipe';
-import RecipeItem from './RecipeItem';
+import PropTypes from 'prop-types';
+import SearchRecipe from '../SearchRecipe/SearchRecipe';
+import RecipeItem from '../RecipeItem/RecipeItem';
 
-function RecipeList() {
+function RecipeList({ baseUrl }) {
   const [filter, setFilter] = useState('');
   const [recipes, setRecipes] = useState([]);
 
   useEffect(() => {
-    fetch('https://cors-anywhere.herokuapp.com/http://www.recipepuppy.com/api/')
+    fetch(baseUrl)
       .then(response => response.json())
       .then(json => setRecipes(json.results))
       .catch(error => console.log(error));
-  }, []);
+  }, [baseUrl]);
 
-  const handleFiltering = event => {
-    if (event.keyCode !== 13) return;
+  const handleFiltering = event => setFilter(event.target.value.toLowerCase());
 
-    setFilter(event.target.value);
-  };
-  console.log(recipes);
   return (
     <div>
       <SearchRecipe handleFiltering={handleFiltering} />
       <ul>
         {recipes
-          .filter(recipe => {
-            if (!filter) return true;
-
-            return recipe.title.toLowerCase().includes(filter.toLowerCase());
-          })
+          .filter(recipe => recipe.title.toLowerCase().includes(filter))
           .map(recipe => (
             <RecipeItem name={recipe.title} image={recipe.thumbnail} />
           ))}
@@ -36,5 +29,9 @@ function RecipeList() {
     </div>
   );
 }
+
+RecipeList.propTypes = {
+  baseUrl: PropTypes.string.isRequired
+};
 
 export default RecipeList;

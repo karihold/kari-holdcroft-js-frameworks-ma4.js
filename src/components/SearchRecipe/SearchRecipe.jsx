@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 function SearchRecipe(props) {
-  return <input placeholder="Search for a recipe by title" onKeyDown={props.handleFiltering} />;
+  return <input placeholder="Search for a recipe by title" onChange={props.handleFiltering} />;
 }
 
 SearchRecipe.propTypes = {
